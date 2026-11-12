@@ -1,40 +1,51 @@
-<?php
-/**
- * The template for displaying all single posts
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
- *
- * @package Victor-theme
- */
+<?php get_header(); ?>
 
-get_header();
-?>
+  <?php while ( have_posts() ) : the_post(); ?>
 
-	<main id="primary" class="site-main">
+    <!-- POST HEADER -->
+    <section class="single-hero">
+      <div class="wrap">
+        <span class="eyebrow">
+          <a href="<?php echo esc_url( get_permalink( get_option( 'page_for_posts' ) ) ); ?>">victormuhia.co.ke / blog</a>
+        </span>
+        <h1><?php the_title(); ?></h1>
+        <div class="post-meta">
+          <span><?php echo esc_html( get_the_date() ); ?></span>
+          <?php
+          $cats = get_the_category();
+          if ( ! empty( $cats ) ) :
+            ?>
+            <span class="post-meta-dot">&middot;</span>
+            <span><?php echo esc_html( $cats[0]->name ); ?></span>
+          <?php endif; ?>
+          <span class="post-meta-dot">&middot;</span>
+          <span><?php echo esc_html( intval( str_word_count( strip_tags( get_the_content() ) ) / 200 ) + 1 ); ?> min read</span>
+        </div>
+      </div>
+    </section>
 
-		<?php
-		while ( have_posts() ) :
-			the_post();
+    <?php if ( has_post_thumbnail() ) : ?>
+      <div class="wrap">
+        <div class="single-featured-image">
+          <?php the_post_thumbnail( 'large' ); ?>
+        </div>
+      </div>
+    <?php endif; ?>
 
-			get_template_part( 'template-parts/content', get_post_type() );
+    <!-- POST CONTENT -->
+    <section id="single-content">
+      <div class="wrap">
+        <div class="single-content-inner">
+          <?php the_content(); ?>
+        </div>
 
-			the_post_navigation(
-				array(
-					'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous:', 'victor-theme' ) . '</span> <span class="nav-title">%title</span>',
-					'next_text' => '<span class="nav-subtitle">' . esc_html__( 'Next:', 'victor-theme' ) . '</span> <span class="nav-title">%title</span>',
-				)
-			);
+        <div class="single-footer">
+          <a href="<?php echo esc_url( get_permalink( get_option( 'page_for_posts' ) ) ); ?>" class="btn btn-ghost">&larr; Back to all posts</a>
+          <a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="btn btn-primary">Book a free audit call</a>
+        </div>
+      </div>
+    </section>
 
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
+  <?php endwhile; ?>
 
-		endwhile; // End of the loop.
-		?>
-
-	</main><!-- #main -->
-
-<?php
-get_sidebar();
-get_footer();
+<?php get_footer(); ?>
